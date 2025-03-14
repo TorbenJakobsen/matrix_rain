@@ -37,8 +37,8 @@ The colors are the default initial `curses` colors.
 """
 
 
-MIN_SCREEN_SIZE_Y = 10
-MIN_SCREEN_SIZE_X = 10
+MIN_SCREEN_SIZE_Y = 8
+MIN_SCREEN_SIZE_X = 8
 
 DELAY_SPEED_SEC: float = 0.1
 """Determines sleep interval in seconds to regulate rain trail descent on screen."""
@@ -103,7 +103,7 @@ from enum import Enum
 
 
 class Action(Enum):
-    NONE = (0,)
+    NONE = 0
     CONTINUE = 1
     BREAK = 2
     KEY_UP = 3
@@ -287,14 +287,16 @@ def main_loop(
         #
 
         action = handle_key_presses(screen)
-        if action is Action.BREAK:
-            break
         if action is Action.KEY_UP:
             # decrease sleep delay
             delay_speed_sec = delay_speed_sec / 1.6
+            continue
         if action is Action.KEY_DOWN:
             # increase sleep delay
             delay_speed_sec = delay_speed_sec * 1.6
+            continue
+        if action is Action.BREAK:
+            break
 
         #
         # END OF LOOP
