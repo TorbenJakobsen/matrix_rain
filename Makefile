@@ -27,7 +27,7 @@ setup: clean venv
 .PHONY: clean
 clean:
 	# Clean __pycache__ dirs - abuses list comprehension by using "side effect" of `rmtree`
-	$(PYTHON) -Bc "import pathlib; import shutil; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__')]"
+	python3 -Bc "import pathlib; import shutil; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__')]"
 	rm -rf venv
 
 .PHONY: test

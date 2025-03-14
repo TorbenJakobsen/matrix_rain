@@ -10,5 +10,4 @@ From Wikipedia:
   TODO
 ========
 
-[ ] Code breaks after resize when folowing writing to lower right corner.  
-[ ] Makefile
+* Code breaks after resize when folowing writing to lower right corner.  
