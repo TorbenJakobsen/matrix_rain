@@ -1,5 +1,5 @@
 import random
-from typing import Self, Tuple, Union
+from typing import Self
 
 
 class IllegalArgumentError(ValueError):
@@ -20,7 +20,6 @@ class MatrixRainTrail:
         column_number: int,
         screen_columns: int,
         screen_lines: int,
-        speed: float = 1.0,
     ):
         #
         # Argument validation and sanity checks
@@ -79,7 +78,13 @@ class MatrixRainTrail:
         return self._length
 
     def __str__(self: Self) -> str:
-        return f"C:{self.column_number} L:{self.head_start()}| HV:{self.is_head_visible()} | TV:{self.is_tail_visible()} | X:{self.is_exhausted()}"
+        """
+        Intended as a convenience when debugging or writing to log.
+
+        :return: _description_
+        :rtype: str
+        """
+        return f"C:{self.column_number} L:{self.head_start()} | HV:{self.is_head_visible()} | TV:{self.is_tail_visible()} | X:{self.is_exhausted()}"
 
     #
     # ---

@@ -14,7 +14,7 @@ class MatrixRainCharacters:
         "0123456789"
         # Signs and punctuations
         "~©£€#$§%^&-+=()[]{}<>|;:,.?!`@*_'\\/\""
-        # Beware that hangul, katakana, and other "extended" alphabets can leave "cruft"
+        # Beware that hangul, katakana, and other "non-western" alphabets can leave "cruft"
     )
 
     __CHARACTERS_AS_LIST = list(__CHARACTERS_AS_STR)
