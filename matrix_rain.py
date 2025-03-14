@@ -275,12 +275,8 @@ def main_loop(
         #
 
         action = handle_key_presses(screen)
-        if action is Action.NONE:
-            pass  # noqa
-        elif action is Action.BREAK:
+        if action is Action.BREAK:
             break
-        elif action is Action.CONTINUE:
-            continue
 
         #
         # END OF LOOP
