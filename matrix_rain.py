@@ -99,6 +99,47 @@ def setup_screen(
     )
 
 
+from enum import Enum
+
+
+class Action(Enum):
+    NONE = (0,)
+    CONTINUE = 1
+    BREAK = 2
+
+
+def handle_key_presses(screen: curses.window) -> Action:
+
+    Q_CHAR_SET: set[int] = {ord("q"), ord("Q")}
+    F_CHAR_SET: set[int] = {ord("f"), ord("F")}
+
+    ch: int = screen.getch()
+    if ch == -1:
+        # no input
+        return Action.CONTINUE
+
+    elif ch in Q_CHAR_SET:
+        # Quit
+        return Action.BREAK
+
+    elif ch in F_CHAR_SET:
+        # Freeze
+        quit_loop = False
+        while True:
+            ch = screen.getch()
+            if ch in F_CHAR_SET:
+                # Unfreeze
+                break
+            elif ch in Q_CHAR_SET:
+                # Quit
+                quit_loop = True
+                break
+        if quit_loop:
+            return Action.BREAK
+
+    return Action.NONE
+
+
 def main_loop(
     screen: curses.window,
     args: argparse.Namespace,
@@ -112,14 +153,11 @@ def main_loop(
 
     # ---
 
-    Q_CHAR_SET: set[int] = {ord("q"), ord("Q")}
-    F_CHAR_SET: set[int] = {ord("f"), ord("F")}
-
     char_itr: MatrixRainCharacters = MatrixRainCharacters()
 
     active_trails_list: list[MatrixRainTrail] = []
 
-    # Initial (invalid) values - will force a size recalculation later
+    # Initial ("invalid" as too small) values -> will force a size recalculation later
     screen_max_x: int = 1  # columns
     screen_max_y: int = 1  # lines
 
@@ -236,29 +274,13 @@ def main_loop(
         # This logic needs to be at end of loop as it intentionally break out of loop
         #
 
-        ch: int = screen.getch()
-        if ch == -1:
-            # no input
-            continue
-
-        elif ch in Q_CHAR_SET:
-            # Quit
+        action = handle_key_presses(screen)
+        if action is Action.NONE:
+            pass  # noqa
+        elif action is Action.BREAK:
             break
-
-        elif ch in F_CHAR_SET:
-            # Freeze
-            quit_loop = False
-            while True:
-                ch = screen.getch()
-                if ch in F_CHAR_SET:
-                    # Unfreeze
-                    break
-                elif ch in Q_CHAR_SET:
-                    # Quit
-                    quit_loop = True
-                    break
-            if quit_loop:
-                break
+        elif action is Action.CONTINUE:
+            continue
 
         #
         # END OF LOOP
