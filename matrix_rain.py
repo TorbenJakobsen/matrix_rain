@@ -2,7 +2,8 @@ import argparse
 import curses
 import random
 import time
-from typing import Optional, Sequence
+from collections.abc import Sequence
+from typing import Optional
 
 from matrix_rain_characters import MatrixRainCharacters
 from matrix_rain_trail import MatrixRainTrail
@@ -19,7 +20,8 @@ COLOR_PAIR_TAIL: int = 9
 
 BLANK: str = " "
 
-DELAY_SPEED_SEC = 0.1
+DELAY_SPEED_SEC: float = 0.1
+"""Determines sleep interval in seconds to regulate rain trail descent on screen."""
 
 VALID_COLORS = {
     "black": curses.COLOR_BLACK,
@@ -31,6 +33,12 @@ VALID_COLORS = {
     "cyan": curses.COLOR_CYAN,
     "white": curses.COLOR_WHITE,
 }
+"""
+Translates color names to `curses` constants.
+
+The colors are the default initial `curses` colors.
+"""
+
 
 MIN_SCREEN_SIZE_Y = 10
 MIN_SCREEN_SIZE_X = 10
@@ -40,18 +48,26 @@ class MatrixRainException(Exception):
     pass
 
 
-def head_at_lower_right_corner(trail: MatrixRainTrail):
-    return (
-        trail.head_start(),
-        trail.column_number,
-    ) == (curses.LINES - 1, curses.COLS - 1)
+def at_lower_right_corner(line, col) -> bool:
+    return (line, col) == (curses.LINES - 1, curses.COLS - 1)
 
 
-def tail_at_lower_right_corner(trail: MatrixRainTrail):
-    return (
-        trail.tail_start(),
-        trail.column_number,
-    ) == (curses.LINES - 1, curses.COLS - 1)
+def head_at_lower_right_corner(trail: MatrixRainTrail) -> bool:
+    """
+    `True` if position is at the bottom right corner of screen; otherwise `False`.
+
+    If `curses` add a char at bottom right corner the cursor will be moved outside the screen and raise an error.
+    """
+    return at_lower_right_corner(trail.head_start(), trail.column_number)
+
+
+def tail_at_lower_right_corner(trail: MatrixRainTrail) -> bool:
+    """
+    `True` if position is at the bottom right corner of screen; otherwise `False`.
+
+    If `curses` add a char at bottom right corner the cursor will be moved outside the screen and raise an error.
+    """
+    return at_lower_right_corner(trail.tail_start(), trail.column_number)
 
 
 def setup_screen(
